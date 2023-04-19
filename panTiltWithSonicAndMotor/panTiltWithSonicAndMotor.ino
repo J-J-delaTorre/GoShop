@@ -67,23 +67,25 @@ void loop()
   
   // get active blocks from Pixy
   pixy.ccc.getBlocks();
-  if ((inches >= 12) && (inches < 48)){
-    analogWrite(enA,75);
-    digitalWrite(in1,HIGH);
-    digitalWrite(in2,LOW);
-  }else{
-    analogWrite(enA,0);
-  }
-
+  
   if (pixy.ccc.numBlocks)
   {        
     i++;
     
-    if (i%60==0)
+    if (i%60==0){
       Serial.println(i);   
-    
+    }
+     
+    if ((inches >= 24) && (inches <= 48)){
+    analogWrite(enA,75);
+    digitalWrite(in1,HIGH);
+    digitalWrite(in2,LOW);
+    } 
+    if((inches > 48) || (inches < 24)){
+      analogWrite(enA,0);
+    }
     // calculate pan and tilt "errors" with respect to first object (blocks[0]), 
-    // which is the biggest object (they are sorted by size).  
+    // which is the biggest object (they are sorted by size). 
     panOffset = (int32_t)pixy.frameWidth/2 - (int32_t)pixy.ccc.blocks[0].m_x;
     tiltOffset = (int32_t)pixy.ccc.blocks[0].m_y - (int32_t)pixy.frameHeight/2;  
   
@@ -110,8 +112,6 @@ void loop()
     panLoop.reset();
     tiltLoop.reset();
     pixy.setServos(panLoop.m_command, tiltLoop.m_command);
+    analogWrite(enA,0);
   }
 }
-
-
-
